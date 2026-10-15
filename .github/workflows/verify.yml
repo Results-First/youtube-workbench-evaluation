@@ -1,6 +1,11 @@
 name: Verify evaluation download
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to verify
+        default: v0.1.1-eval.1
+        required: true
   release:
     types: [published]
 permissions:
@@ -11,9 +16,11 @@ jobs:
     steps:
       - name: Verify public ZIP and bundled application
         shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name || 'v0.1.1-eval.1' }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $base = 'https://github.com/Results-First/youtube-workbench-evaluation/releases/download/v0.1.0-eval.1/'
+          $base = 'https://github.com/Results-First/youtube-workbench-evaluation/releases/download/' + $env:RELEASE_TAG + '/'
           $zip = 'YouTubeWorkbench-CapCut-free-evaluation-Windows-x64.zip'
           Invoke-WebRequest ($base + $zip) -OutFile $zip
           Invoke-WebRequest ($base + 'YouTubeWorkbench-CapCut-SHA256.txt') -OutFile checksums.txt
@@ -33,7 +40,8 @@ jobs:
           if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Acceptance timed out' }
           if ($process.ExitCode -ne 0) { Get-Content "$out/failure.txt" -ErrorAction SilentlyContinue; throw 'Acceptance failed' }
           $result = Get-Content "$out/result.json" -Raw | ConvertFrom-Json
-          if ($result.count -ne 15) { throw 'Unexpected check count' }
+          if ($result.count -ne 19) { throw 'Unexpected check count' }
+          if ('synthetic-95-conflict-blocked' -notin $result.passed) { throw 'Conflict guard not verified' }
           Get-Content "$out/result.json"
           "Verified $($manifest.Count) file hashes"
       - uses: actions/upload-artifact@v4
