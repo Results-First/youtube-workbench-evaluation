@@ -21,7 +21,7 @@ Encrypted-only projects, compounds and templates are unsupported. Video/audio ar
 
 ## Verification
 
-114 regression tests and 15 full-app acceptance checks passed locally. Native Windows folder selection, export, import confirmation and Save were exercised. Independent consumer-device acceptance remains unverified.
+114 regression tests and 15 full-app acceptance checks passed locally. Native Windows folder selection, export, import confirmation and Save were exercised. The exact public ZIP also passed all 15 checks and all 1,195 file hashes on [hosted Windows Server 2022](https://github.com/Results-First/youtube-workbench-evaluation/actions/runs/38669223001) and after a separate anonymous public download. Independent consumer-device acceptance remains unverified.
 
 This build is unsigned. Do not disable Windows security protections.
 
