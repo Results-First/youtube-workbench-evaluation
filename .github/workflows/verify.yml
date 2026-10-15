@@ -1,0 +1,43 @@
+name: Verify evaluation download
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - name: Verify public ZIP and bundled application
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $base = 'https://github.com/Results-First/youtube-workbench-evaluation/releases/download/v0.1.0-eval.1/'
+          $zip = 'YouTubeWorkbench-CapCut-free-evaluation-Windows-x64.zip'
+          Invoke-WebRequest ($base + $zip) -OutFile $zip
+          Invoke-WebRequest ($base + 'YouTubeWorkbench-CapCut-SHA256.txt') -OutFile checksums.txt
+          $expected = ((Get-Content checksums.txt -Raw).Trim() -split '\s+')[0]
+          if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne $expected) { throw 'ZIP hash mismatch' }
+          Expand-Archive $zip 'Clean install é'
+          $bundle = Join-Path $PWD 'Clean install é/YouTubeWorkbench-Evaluation'
+          $manifest = Get-Content (Join-Path $bundle SHA256.json) -Raw | ConvertFrom-Json -AsHashtable
+          foreach ($entry in $manifest.GetEnumerator()) {
+            if ((Get-FileHash (Join-Path $bundle $entry.Key) -Algorithm SHA256).Hash.ToLower() -ne $entry.Value) { throw 'Bundled file hash mismatch' }
+          }
+          $env:PATH = "$env:SystemRoot\System32"
+          $env:PYTHONHOME = ''
+          $env:PYTHONPATH = ''
+          $out = Join-Path $PWD acceptance
+          $process = Start-Process (Join-Path $bundle YouTubeWorkbench-Evaluation.exe) -ArgumentList @('--verify-capcut', $out) -PassThru -WindowStyle Hidden
+          if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Acceptance timed out' }
+          if ($process.ExitCode -ne 0) { Get-Content "$out/failure.txt" -ErrorAction SilentlyContinue; throw 'Acceptance failed' }
+          $result = Get-Content "$out/result.json" -Raw | ConvertFrom-Json
+          if ($result.count -ne 15) { throw 'Unexpected check count' }
+          Get-Content "$out/result.json"
+          "Verified $($manifest.Count) file hashes"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-acceptance
+          path: acceptance/

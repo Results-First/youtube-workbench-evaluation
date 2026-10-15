@@ -1,0 +1,18 @@
+YouTube Workbench CapCut import evaluation
+Copyright 2026 Results-First. All rights reserved except as granted below.
+
+Permission is granted to use and copy this evaluation at no charge for personal
+or business evaluation, and to modify the included original source for your
+own evaluation. You may share the unmodified evaluation package with these
+notices intact. No subscription, activation account or payment is required.
+This grant has no expiration. It does not grant rights to sell this software,
+use third-party trademarks, or redistribute modified versions of our code.
+
+The software is provided AS IS, without warranties of any kind. To the extent
+permitted by applicable law, the authors are not liable for claims or damages
+arising from its use. Use copies of projects and retain your own backups.
+
+Third-party components and public fixtures retain their respective licences.
+Those licences, including any source or modification rights, take precedence
+over this grant for those components. See third-party-notices and fixture
+provenance. This application is not affiliated with or endorsed by CapCut.
