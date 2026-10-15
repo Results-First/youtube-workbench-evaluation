@@ -25,6 +25,8 @@ Encrypted-only projects, compounds and templates are unsupported. Video/audio ar
 
 The conflict-guard update passes 15 focused importer tests and 19 source full-app acceptance checks. Four acceptance checks exercise synthetic 9.5 matching/conflicting copies, disabled actions, unchanged editor content and unchanged source files. Release verification results are recorded in the release notes and Actions. Automated checks substitute dialog responses. Prior native Windows picker testing applies to v0.1.0-eval.1, not a new manual test of this update. Independent consumer-device acceptance remains unverified.
 
+The exact v0.1.1-eval.1 ZIP passed all 19 checks and 1,195 bundled file hashes in a local clean extraction, on [hosted Windows Server 2022](https://github.com/Results-First/youtube-workbench-evaluation/actions/runs/38672349839), and after a separate anonymous public download. SHA256: `b025a2d281fa17da8c9855205e319ffa5f9a0d5fde6ed1a7d655b0e415323b5e`.
+
 This build is unsigned. Do not disable Windows security protections.
 
 ## Free evaluation and feedback
